@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from schemas import user_schemas as schemas
+from schemas import user_schemas as schemas 
 from crud import user as crud
 import db
 import bcrypt
-from lib.token import Token, authenticate_user, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES, pwd_context
+from utils.token import Token, authenticate_user, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES, pwd_context
 from datetime import datetime, timedelta, timezone
 
 router = APIRouter()
@@ -44,3 +44,11 @@ async def login(user: schemas.UserLogin, db: Session = Depends(db.get_db)) -> To
     )
 
     return Token(access_token=access_token, token_type="bearer", user=user_response)
+
+# POST /check-email - Check if email is already registered
+@router.post("/check-email")
+def check_email(email: schemas.Email, db: Session = Depends(db.get_db)):
+    existing_user = crud.get_user_by_email(db, email.email)
+    if existing_user:
+        return {"registered": True}
+    return {"registered": False}

@@ -16,7 +16,7 @@ app = FastAPI(
 
 
 # Include routes
-app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
+app.include_router(auth.router, prefix="/auth", tags=["Auth"])
 app.include_router(rides.router, prefix="/rides", tags=["Rides"])
 # app.include_router(bookings.router, prefix="/bookings", tags=["Bookings"])
 # app.include_router(chat.router, prefix="/chat", tags=["Chat"])

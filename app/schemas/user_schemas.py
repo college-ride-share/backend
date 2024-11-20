@@ -20,3 +20,6 @@ class UserResponse(BaseModel):
 
     class Config:
         orm_mode = True
+
+class Email(BaseModel):
+    email: EmailStr
