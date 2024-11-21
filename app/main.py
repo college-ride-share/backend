@@ -4,6 +4,8 @@ from fastapi import FastAPI
 
 from routes import auth, rides, bookings, chat
 from db import Base, engine
+import redis
+from utils.redis_helper import redis_client
 
 
 
@@ -13,6 +15,7 @@ app = FastAPI(
     description="API for a campus ride-sharing app built with FastAPI and PostgreSQL.",
     version="1.0.0",
 )
+
 
 
 # Include routes
