@@ -11,7 +11,9 @@ class User(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     email = Column(String, unique=True, nullable=False)
-    name = Column(String, nullable=False)
+    firstname = Column(String, nullable=False)
+    lastname = Column(String, nullable=False)
+    dob = Column(TIMESTAMP, nullable=False)
     password = Column(String, nullable=False)
     is_driver = Column(Boolean, default=False)
     vehicle_info = Column(JSON, nullable=True)

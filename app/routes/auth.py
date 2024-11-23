@@ -12,6 +12,7 @@ from utils.token import (
     verify_refresh_token,
     ACCESS_TOKEN_EXPIRE_MINUTES,
     REFRESH_TOKEN_EXPIRE_DAYS,
+    pwd_context,
 )
 from datetime import datetime, timedelta, timezone
 import random
@@ -24,7 +25,7 @@ router = APIRouter()
 
 # POST /signup - Create a new user
 @router.post("/signup")
-def signup(user: schemas.UserCreate, db: Session = Depends(db.get_db)):
+async def signup(user: schemas.UserCreate, db: Session = Depends(db.get_db)) -> Token:
     if not validate_password(user.password):
         raise HTTPException(
             status_code=400,
@@ -32,18 +33,55 @@ def signup(user: schemas.UserCreate, db: Session = Depends(db.get_db)):
                 "Password must be at least 8 characters long, contain at least one uppercase letter, "
                 "one lowercase letter, one number, and one special character."
             ),
-    )
+        )
+    
     existing_user = crud.get_user_by_email(db, user.email)
+
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     hashed_password = pwd_context.hash(user.password)
+    print(hashed_password)
+    # Unhashed user password
+    unhashed_password = user.password
+   
     user.password = hashed_password
-    return crud.create_user(db, user)
+   
+    # Create the user
+    user = crud.create_user(db, user)
+  
+
+    # Login the user after signup
+    return await login(schemas.UserLogin(email=user.email, password=unhashed_password), db)
+
+# async def signup(user: schemas.UserCreate, db: Session = Depends(db.get_db)) -> Token:
+#     print(user)
+#     if not validate_password(user.password):
+#         raise HTTPException(
+#             status_code=400,
+#             detail=(
+#                 "Password must be at least 8 characters long, contain at least one uppercase letter, "
+#                 "one lowercase letter, one number, and one special character."
+#             ),
+#     )
+#     existing_user = crud.get_user_by_email(db, user.email)
+#     if existing_user:
+#         raise HTTPException(status_code=400, detail="Email already registered")
+#     hashed_password = pwd_context.hash(user.password)
+#     user.password = hashed_password
+
+#     # Create the user
+#     user = crud.create_user(db, user)
+
+#     # Login the user after signup
+#     return login(schemas.UserLogin(email=user.email, password=user.password), db)
+
 
 # POST /login - Login a user
 @router.post("/login")
 async def login(user: schemas.UserLogin, db: Session = Depends(db.get_db)) -> Token:
+   
     user = authenticate_user(db, user.email, user.password)
+   
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -62,8 +100,10 @@ async def login(user: schemas.UserLogin, db: Session = Depends(db.get_db)) -> To
     user_response = schemas.UserResponse(
         id=str(user.id),
         email=user.email,
-        name=user.name,
-        is_driver=user.is_driver
+        is_driver=user.is_driver,
+        firstname=user.firstname,
+        lastname=user.lastname,
+        dob=user.dob
     )
 
     return Token(access_token=access_token, token_type="bearer", user=user_response, refresh_token=refresh_token)

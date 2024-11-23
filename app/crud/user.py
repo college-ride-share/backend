@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 import models
-
+from datetime import datetime
 from schemas import user_schemas as schemas
 
 # CRUD operations for users
@@ -9,8 +9,10 @@ from schemas import user_schemas as schemas
 def create_user(db: Session, user: schemas.UserCreate):
     db_user = models.User(
         email=user.email, 
-        name=user.name, 
-        password=user.password
+        password=user.password,
+        firstname=user.firstname,
+        lastname=user.lastname,
+        dob=datetime.strptime(user.dob, "%m/%d/%y"),
     )
     db.add(db_user)
     db.commit()

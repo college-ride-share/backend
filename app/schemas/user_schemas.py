@@ -5,7 +5,9 @@ from datetime import datetime
 
 class UserCreate(BaseModel):
     email: EmailStr
-    name: str
+    firstname: str
+    lastname: str
+    dob: str
     password: str
 
 class UserLogin(BaseModel):
@@ -15,8 +17,10 @@ class UserLogin(BaseModel):
 class UserResponse(BaseModel):
     id: str
     email: EmailStr
-    name: str
     is_driver: bool
+    firstname: str
+    lastname: str
+    dob: datetime
 
     class Config:
         orm_mode = True
