@@ -37,6 +37,6 @@ class VerifyResetCode(BaseModel):
 
 class ResetPassword(BaseModel):
     email: EmailStr
-    code: str = Field(min_length=6, max_length=6)
+    # code: str = Field(min_length=6, max_length=6)
     new_password: str = Field(min_length=8)
     confirm_password: str = Field(min_length=8)

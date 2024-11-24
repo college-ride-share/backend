@@ -19,6 +19,7 @@ import random
 import string
 from utils.redis_helper import redis_client
 from utils.password_validator import validate_password
+from utils.email import send_email
 
 
 router = APIRouter()
@@ -52,29 +53,6 @@ async def signup(user: schemas.UserCreate, db: Session = Depends(db.get_db)) -> 
 
     # Login the user after signup
     return await login(schemas.UserLogin(email=user.email, password=unhashed_password), db)
-
-# async def signup(user: schemas.UserCreate, db: Session = Depends(db.get_db)) -> Token:
-#     print(user)
-#     if not validate_password(user.password):
-#         raise HTTPException(
-#             status_code=400,
-#             detail=(
-#                 "Password must be at least 8 characters long, contain at least one uppercase letter, "
-#                 "one lowercase letter, one number, and one special character."
-#             ),
-#     )
-#     existing_user = crud.get_user_by_email(db, user.email)
-#     if existing_user:
-#         raise HTTPException(status_code=400, detail="Email already registered")
-#     hashed_password = pwd_context.hash(user.password)
-#     user.password = hashed_password
-
-#     # Create the user
-#     user = crud.create_user(db, user)
-
-#     # Login the user after signup
-#     return login(schemas.UserLogin(email=user.email, password=user.password), db)
-
 
 # POST /login - Login a user
 @router.post("/login")
@@ -166,11 +144,11 @@ def request_reset(email: schemas.Email, db: Session = Depends(db.get_db)):
     redis_client.setex(f"reset_code:{email.email}", 600, reset_token)
     
     # TODO: Send an email with the reset token
-    # send_email(
-    #     email=email.email,
-    #     subject="CarShareU Password Reset",
-    #     message=f"Use this token to reset your password: {reset_token}",
-    # )
+    send_email(
+        email=email.email,
+        subject="CarShareU Password Reset",
+        message=f"Use this token to reset your password: {reset_token}",
+    )
     print(f"Reset token: {reset_token}")
     
     return {"message": "Password reset token sent to email"}
@@ -213,4 +191,4 @@ def reset_password(reset: schemas.ResetPassword, db: Session = Depends(db.get_db
     # Update the user's password
     crud.reset_password(db, reset.email, hashed_password)
     
-    return {"message": "Password reset successful"}
+    return {"reset": True}
