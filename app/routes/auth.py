@@ -139,7 +139,13 @@ def request_reset(email: schemas.Email, db: Session = Depends(db.get_db)):
     
     # Generate a reset token
     reset_token = "".join(random.choices(string.ascii_uppercase + string.digits, k=6))
-    
+
+    # Check if user has a reset token in Redis, if so, delete it and replace it with the new one
+    existing_reset_token = redis_client.get(f"reset_code:{email.email}")
+
+    if existing_reset_token:
+        redis_client.delete(f"reset_code:{email.email}")
+
     # Store the reset token in Redis
     redis_client.setex(f"reset_code:{email.email}", 600, reset_token)
     

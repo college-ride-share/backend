@@ -14,6 +14,7 @@ app = FastAPI(
     title="Campus Ride-Sharing API",
     description="API for a campus ride-sharing app built with FastAPI and PostgreSQL.",
     version="1.0.0",
+    
 )
 
 
@@ -26,4 +27,4 @@ app.include_router(rides.router, prefix="/rides", tags=["Rides"])
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="172.20.251.195", port=8000)
+    uvicorn.run(app, host="localhost", port=8000)

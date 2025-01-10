@@ -9,9 +9,12 @@ EMAIL_PASSWORD = os.getenv("GMAIL_PASSWORD")
 # Send an email
 def send_email(email: str, subject: str, message: str):
     # Initialize the SMTP server
-    smtpserver = smtplib.SMTP("smtp.gmail.com", 587)
-    smtpserver.starttls()
+    smtpserver = smtplib.SMTP_SSL("smtp.gmail.com", 465)
     smtpserver.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+
+    # smtpserver = smtplib.SMTP("smtp.gmail.com", 587)
+    # smtpserver.starttls()
+    # smtpserver.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
 
     try:
         # Create the email message

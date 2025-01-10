@@ -1,13 +1,12 @@
 {
-    "configurations": [
-        
-        {
-            "type": "debugpy",
-            "request": "launch",
-            "name": "Launch FastAPI App",
-            "program": "${workspaceFolder}/app/main.py",
-            "console": "integratedTerminal",
-            "envFile": "${workspaceFolder}/.env"
-        }
-    ]
+  "configurations": [
+    {
+      "type": "debugpy",
+      "request": "launch",
+      "name": "Launch FastAPI App",
+      "program": "${workspaceFolder}/app/main.py",
+      "console": "integratedTerminal",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
 }
