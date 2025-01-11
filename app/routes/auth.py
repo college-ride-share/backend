@@ -88,9 +88,9 @@ async def login(user: schemas.UserLogin, db: Session = Depends(db.get_db)) -> To
 
 # POST /refresh - Refresh an access token
 @router.post("/refresh")
-async def refresh_token(refresh_token: str, db: Session = Depends(db.get_db)) -> Token:
+async def refresh_token(body: schemas.RefreshToken, db: Session = Depends(db.get_db)) -> Token:
     # Verify refresh token
-    token_data = verify_refresh_token(refresh_token)
+    token_data = verify_refresh_token(body.refresh_token)
     if not token_data:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -116,8 +116,10 @@ async def refresh_token(refresh_token: str, db: Session = Depends(db.get_db)) ->
     user_response = schemas.UserResponse(
         id=str(user.id),
         email=user.email,
-        name=user.name,
-        is_driver=user.is_driver
+        is_driver=user.is_driver,
+        firstname=user.firstname,
+        lastname=user.lastname,
+        dob=user.dob
     )
 
     return Token(access_token=access_token, token_type="bearer", user=user_response, refresh_token=refresh_token)

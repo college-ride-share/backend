@@ -40,3 +40,6 @@ class ResetPassword(BaseModel):
     # code: str = Field(min_length=6, max_length=6)
     new_password: str = Field(min_length=8)
     confirm_password: str = Field(min_length=8)
+
+class RefreshToken(BaseModel):
+    refresh_token: str
