@@ -1,3 +1,4 @@
+from fastapi import File, UploadFile
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 from datetime import datetime
@@ -43,3 +44,6 @@ class ResetPassword(BaseModel):
 
 class RefreshToken(BaseModel):
     refresh_token: str
+
+class UploadPhotoRequest(BaseModel):
+    file: UploadFile = File(...)

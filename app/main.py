@@ -2,7 +2,7 @@ import uvicorn
 from typing import Union
 from fastapi import FastAPI
 
-from routes import auth, rides, bookings, chat
+from routes import auth, rides, bookings, chat, user
 from db import Base, engine
 import redis
 from utils.redis_helper import redis_client
@@ -21,6 +21,7 @@ app = FastAPI(
 
 # Include routes
 app.include_router(auth.router, prefix="/auth", tags=["Auth"])
+app.include_router(user.router, prefix="/user", tags=["User"])
 app.include_router(rides.router, prefix="/rides", tags=["Rides"])
 # app.include_router(bookings.router, prefix="/bookings", tags=["Bookings"])
 # app.include_router(chat.router, prefix="/chat", tags=["Chat"])

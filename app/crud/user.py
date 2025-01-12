@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 import models
 from datetime import datetime
 from schemas import user_schemas as schemas
+import uuid
 
 # CRUD operations for users
 
@@ -22,6 +23,13 @@ def create_user(db: Session, user: schemas.UserCreate):
 # Get user by email
 def get_user_by_email(db: Session, email: str):
     return db.query(models.User).filter(models.User.email == email).first()
+
+# Get user by ID
+def get_user_by_id(db: Session, user_id: str):
+    user = db.query(models.User).filter(models.User.id == uuid.UUID(user_id).hex).first()
+    if user:
+        user.id = str(user.id)  # Convert UUID to string
+    return user
 
 # Reset password
 def reset_password(db: Session, email: str, new_password: str):
